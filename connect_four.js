@@ -1,9 +1,15 @@
+var canvas = document.getElementById("canvas"),
+	ctx = canvas.getContext("2d"),
+	width = 700,
+	height = 600;
+
 class Board {
 	constructor() {
 		this.board = [];
 		this.width = 6;
 		this.height = 7;
 		this.playing = true
+		this.turn = 1
 		for(var i = 0; i < this.height; i++) {
 			this.board.push([])
 			for(var j = 0; j < this.width; j++) {
@@ -18,7 +24,9 @@ class Board {
 
 	place(x, player) {
 	/* place piece on board while game is still playing*/
+
 		var has_placed = false
+
 		if(x < this.width && x > -1 && this.playing == true) {
 
 			// place on top if piece is there
@@ -26,7 +34,7 @@ class Board {
 				if(this.board[i][x] == 0 && !has_placed) {
 					has_placed = true
 					this.board[i][x] = player
-					this.check_win(player)
+					this.turn++;
 				}
 			}
 
@@ -37,10 +45,59 @@ class Board {
 			}
 		}
 
+		if(this.playing == false) {
+			this.reset()
+		}
+		game.show()
+		this.check_win(player)
+	}
+
+	reset() {
+		this.board = [];
+		this.width = 6;
+		this.height = 7;
+		this.playing = true
+		this.turn = 1
+		for(var i = 0; i < this.height; i++) {
+			this.board.push([])
+			for(var j = 0; j < this.width; j++) {
+				this.board[i].push(0)
+			}	
+		}
+	}
+	
+	draw_piece(x, y, col) {
+		var piece_width = 25
+		var piece_height = 25
+		var offset_x = 200
+		var offset_y = 100
+		ctx.beginPath()
+		ctx.fillStyle = col
+		ctx.fillRect(x+offset_x, y+offset_y, piece_width, piece_height)
+		ctx.closePath()
 	}
 
 	show() {
-		console.log(this.get_board())
+		var ratio = 50;
+		var board = this.get_board()
+		ctx.clearRect(0, 0, width, height)
+		for(var row = 0; row < this.height; row++) {
+			for(var col = 0; col < this.width; col++) {
+				if(board[row][col] == 1) {
+					this.draw_piece(col*ratio, row*ratio, "blue" )
+				}
+				else if(board[row][col] == 2) {
+					this.draw_piece(col*ratio, row*ratio, "red" )
+				}
+				else if(board[row][col] == 0) {
+					this.draw_piece(col*ratio, row*ratio, "black" )
+				}
+
+
+			}
+		}
+		console.log(board)
+	
 	}
 
 
@@ -195,7 +252,8 @@ class Board {
 
 	check_win(player) {
 		if(this.vertical_win(player) || this.horizontal_win(player) || this.diagonal_win(player)) {
-			console.log("Player " + player + " has won.")
+			ctx.font = '20px serif';
+			ctx.fillText("Player " + player + " has won.", (canvas.width/2)-80, 20)
 			this.playing = false
 		}
 
@@ -203,9 +261,81 @@ class Board {
 
 }
 
+
 var game = new Board()
+	
+
+game.show()
+
+
+
+	
+		ctx.closePath()
+canvas.addEventListener('click', function(e) { 
+	var piece_width = 25
+	var piece_height = 25
+	var offset_x = 200
+	var offset_y = 100
+	var ratio = 50
+	var player = 1
+
+	var x;
+	var y;
+	if (e.pageX || e.pageY) { 
+	  x = e.pageX;
+	  y = e.pageY;
+	}
+	else { 
+	  x = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft; 
+	  y = e.clientY + document.body.scrollTop + document.documentElement.scrollTop; 
+	} 
+	x -= canvas.offsetLeft;
+	y -= canvas.offsetTop;
+
+
+
+
+	if(game.turn % 2 == 0) {
+		player = 2
+	}
+	else {
+		player = 1
+	}
+	if(x <= (offset_x+piece_width) && x >= offset_x) {
+		game.place(0, player)
+	}
+	else if(x <= (offset_x+(piece_width*3)) && x >= (offset_x+piece_width)) {
+		game.place(1, player)
+	}
+	else if(x <= (offset_x+(piece_width*5)) && x >= (offset_x+(piece_width*3))) {
+		game.place(2, player)
+	}
+	else if(x <= (offset_x+(piece_width*7)) && x >= (offset_x+(piece_width*5))) {
+		game.place(3, player)
+	}
+	else if(x <= (offset_x+(piece_width*9)) && x >= (offset_x+(piece_width*7))) {
+		game.place(4, player)
+	}
+	else if(x <= (offset_x+(piece_width*11)) && x >= (offset_x+(piece_width*9))) {
+		game.place(5, player)
+	}
+	else if(x <= (offset_x+(piece_width*13)) && x >= (offset_x+(piece_width*11))) {
+		game.place(6, player)
+	}
+
+	
+
+
+
+
+
+	
+	
+
+}, false);
 
 //setInterval(tick(), 1000)
+
 
 
 
