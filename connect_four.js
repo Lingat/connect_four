@@ -205,27 +205,8 @@ class Board {
 
 var game = new Board()
 
-
-
-game.place(4, 1)
-game.place(4, 1)
-game.place(4, 1)
-game.place(4, 2)
-game.place(4, 2)
-
-game.place(3, 2)
-game.place(3, 1)
-game.place(3, 1)
-game.place(3, 2)
-game.place(2, 1)
-game.place(2, 1)
-game.place(2, 2)
-game.place(1, 1)
-game.place(1, 2)
+//setInterval(tick(), 1000)
 
 
 
 
-
-
-game.show()
